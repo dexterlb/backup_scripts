@@ -23,6 +23,14 @@ function wait_check {
     wait $1 || { fail=1; msg "command failed!"; }
 }
 
+function make_absolute {
+    if [[ "${1}" =~ ^[~/] ]]; then
+        echo "${1}"
+    else
+        echo "$(cd "${cdir}" ; realpath "${1}")"
+    fi
+}
+
 check_cache_dir="$(readlink -f "${cdir}/../check_cache")/$(date +'%Y%m%d%H%M%S')"
 mkdir -p "${check_cache_dir}"
 msg "will use dir ${check_cache_dir} for restic check cache"
@@ -54,7 +62,22 @@ wait_check $!
 for bp in "${backups[@]}"; do
     IFS=: read tag spec path <<< "${bp}"
 
+    path="$(make_absolute "${path}")"
+
     case "${spec}" in
+        cmd)
+            msg
+            msg
+            msg "backing up ${tag} using script ${path}"
+            msg
+
+            ${restic_cmd} -r "${repo}" backup \
+                --verbose \
+                --tag ${common_tag} \
+                --tag ${tag} \
+                --stdin-from-command "${path}" &
+            wait_check $!
+            ;;
         dir)
             msg
             msg
@@ -74,6 +97,7 @@ for bp in "${backups[@]}"; do
 
             ${restic_cmd} -r "${repo}" backup \
                 --verbose \
+                --no-scan \
                 --one-file-system \
                 --tag ${common_tag} \
                 --tag ${tag} \
