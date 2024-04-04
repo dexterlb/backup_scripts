@@ -9,6 +9,15 @@ function msg {
     echo "${@}" >&2
 }
 
+if which mail &>/dev/null; then
+    mail_cmd=mail
+elif which s-nail &>/dev/null; then
+    mail_cmd=s-nail
+else
+    msg "unable to find a command for sending mail"
+    exit 1
+fi
+
 output_file="$(mktemp)"
 trap 'rm -rf -- "${output_file}"' EXIT
 
