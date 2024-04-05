@@ -5,7 +5,7 @@ retention=(--keep-daily 5 --keep-weekly 3 --keep-monthly 6 --keep-yearly 30)
 
 # What to backup and what not to backup
 backups=(
-    backup_scripts:dir:/absolute/path/to/some/dir
+    some_dir:dir:/absolute/path/to/some/dir
 )
 
 common_tag=auto_backup
