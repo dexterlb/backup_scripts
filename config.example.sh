@@ -12,5 +12,6 @@ common_tag=auto_backup
 
 repo=rest:http://user:pass@host:port/repo
 repo_password=i_am_so_secret
+repo_compression=max
 
 error_email="foo@example.com"

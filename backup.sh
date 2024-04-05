@@ -51,6 +51,7 @@ function exit_hook {
 trap exit_hook INT TERM
 
 export RESTIC_PASSWORD="${repo_password}"
+export RESTIC_COMPRESSION="${repo_compression}"
 
 # Remove locks from other stale processes to keep the automated backup running.
 msg "unlocking repo"
