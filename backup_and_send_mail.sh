@@ -26,5 +26,5 @@ fail=0
 
 if [[ "${fail}" -ne 0 ]]; then
     msg "Script has failures. Sending mail."
-    mail -s "$(hostname) backups have errors" "${error_email}" < "${output_file}"
+    "${mail_cmd}" -s "$(hostname) backups have errors" "${error_email}" < "${output_file}"
 fi
