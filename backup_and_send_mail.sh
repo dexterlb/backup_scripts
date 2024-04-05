@@ -19,10 +19,12 @@ else
 fi
 
 output_file="$(mktemp)"
-trap 'rm -rf -- "${output_file}"' EXIT
+trap 'rm -rf -- "${output_file}"{,.sync}' EXIT
+mkfifo "${output_file}".sync
 
 fail=0
-"${cdir}"/backup.sh 2>&1 | tee >(ts '%Y-%m-%d %H:%M:%S' > "${output_file}") || fail=1
+"${cdir}"/backup.sh 2>&1 | tee >(ts '%Y-%m-%d %H:%M:%S' > "${output_file}"; echo > "${output_file}".sync) || fail=1
+cat "${output_file}".sync
 
 if [[ "${fail}" -ne 0 ]]; then
     msg "Script has failures. Sending mail."
